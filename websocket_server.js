@@ -10,7 +10,7 @@ const profanity = new Profanity(options)
 const { Client, Server } = require('node-osc')
 const oscClient = new Client('127.0.0.1', 9000)
 const oscServer = new Server(9001, '127.0.0.1', () => {
-	console.log(chalk.cyan(`${new Date().toLocaleTimeString()}:`), chalk.yellow('OSC Server online'))
+	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow('OSC Server online at 9000'))
 })
 
 oscServer.on('message', (msg) => {
@@ -24,23 +24,22 @@ const SocketServer = require('ws').Server
 
 const expressPort = 2096
 const expressServer = express().listen(expressPort, () => {
-	console.log(chalk.cyan(`${new Date().toLocaleTimeString()}:`), chalk.yellow(`Server started at ${expressPort}`))
+	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow(`Server started at ${expressPort}`))
 })
 
 const wss = new SocketServer({ server: expressServer })
 
 wss.on('connection', (ws, request) => {
 	let clientUptimeDateStart = Date.now()
-	console.log(chalk.cyan(`${new Date().toLocaleTimeString()}:`), chalk.hex('#6ee859')('[Server] Client connected.'))
+	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.hex('#6ee859')('Client connected'))
 
 	ws.on('close', () => {
-		console.log(chalk.cyan(`${new Date().toLocaleTimeString()}:`), chalk.hex('#e85959')(`[Server] Client disconnected. Client uptime was ${(Date.now() - clientUptimeDateStart) / 1000} seconds.`))
+		console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.hex('#e85959')(`Client disconnected after ${(Date.now() - clientUptimeDateStart) / 1000} seconds`))
 	})
 
 	ws.on('message', (message) => {
 		const messageString = message.toString()
 		const messageObject = JSON.parse(message)
-		console.log(chalk.cyan(`${new Date().toLocaleTimeString()}:`), chalk.grey(`${messageString}`))
 
 		processMessage(messageObject)
 
@@ -115,9 +114,13 @@ function processInput(message) {
 			oscClient.send('/avatar/parameters/Upright', 1)
 			break
 	}
+
+	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🕹️: ${message}}`)
 }
 
 function processChat(message) {	
 	// Pass "3" as the CensorType, censors all vowels
 	oscClient.send('/chatbox/input', `${profanity.censor(message, 3)}`, true)
+	
+	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white ⌨️: "${message}"}`)
 }
