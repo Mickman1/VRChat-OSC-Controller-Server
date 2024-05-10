@@ -99,7 +99,8 @@ function processInput(message) {
 
 function processChat(message) {	
 	// Pass "3" as the CensorType, censors all vowels
-	oscClient.send('/chatbox/input', `${profanity.censor(message, 3)}`, true)
+	const censoredMessage = profanity.censor(message, 3)
+	oscClient.send('/chatbox/input', censoredMessage, true)
 	
 	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white ⌨️: "${message}"}`)
 }
