@@ -1,5 +1,5 @@
 {
-  "name": "vrchat-osc-thought-bubble",
+  "name": "vrchat-osc-controller",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
