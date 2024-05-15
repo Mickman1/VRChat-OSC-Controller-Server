@@ -52,11 +52,12 @@ const expressServer = express().listen(expressPort, () => {
 const wss = new SocketServer({ server: expressServer })
 
 wss.on('connection', (ws, request) => {
-	let clientUptimeDateStart = Date.now()
+	let clientStartTime = Date.now()
 	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.hex('#6ee859')('Client connected'))
 
 	ws.on('close', () => {
-		console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.hex('#e85959')(`Client disconnected after ${(Date.now() - clientUptimeDateStart) / 1000} seconds`))
+		console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`),
+		chalk.hex('#e85959')(`Client disconnected after ${(Date.now() - clientStartTime) / 1000} seconds`))
 	})
 
 	ws.on('message', (message) => {
