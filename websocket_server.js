@@ -18,6 +18,7 @@ const inputMap = {
 	'keyDownVoice': 		() => oscClient.send('/input/Voice', 1),
 	'keyDownLookLeft': 	() => oscClient.send('/input/LookLeft', 1),
 	'keyDownLookRight': () => oscClient.send('/input/LookRight', 1),
+	'keyUpAll': 				() => keyUpAll(),
 	'keyUpForward': 		() => oscClient.send('/input/MoveForward', false),
 	'keyUpBackward': 		() => oscClient.send('/input/MoveBackward', false),
 	'keyUpLeft': 				() => oscClient.send('/input/MoveLeft', false),
@@ -59,7 +60,6 @@ wss.on('connection', (ws, request) => {
 	})
 
 	ws.on('message', (message) => {
-		const messageString = message.toString()
 		const messageObject = JSON.parse(message)
 
 		processMessage(messageObject)
@@ -93,10 +93,21 @@ function processInput(message) {
 	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🕹️: ${message}}`)
 }
 
-function processChat(message) {	
+function processChat(message) {
 	// Pass "3" as the CensorType, censors all vowels
 	const censoredMessage = profanity.censor(message, 3)
 	oscClient.send('/chatbox/input', censoredMessage, true)
 	
 	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white ⌨️: "${message}"}`)
+}
+
+function keyUpAll() {
+	oscClient.send('/input/MoveForward', false)
+	oscClient.send('/input/MoveBackward', false)
+	oscClient.send('/input/MoveLeft', false)
+	oscClient.send('/input/MoveRight', false)
+	oscClient.send('/input/Run', false)
+	oscClient.send('/input/Jump', 0)
+	oscClient.send('/input/LookLeft', 0)
+	oscClient.send('/input/LookRight', 0)
 }
