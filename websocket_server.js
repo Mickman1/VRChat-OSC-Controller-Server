@@ -6,7 +6,7 @@ const options = new ProfanityOptions()
 options.wholeWord = false
 const profanity = new Profanity(options)
 
-const inputMap = {
+const messageMap = {
 	'ping':							() => pong(),
 	'keyDownForward': 	() => oscClient.send('/input/MoveForward', true),
 	'keyDownBackward': 	() => oscClient.send('/input/MoveBackward', true),
@@ -91,8 +91,8 @@ function processMessage(message) {
 }
 
 function processInput(message) {
-	if (inputMap[message])
-		inputMap[message]()
+	if (messageMap[message])
+		messageMap[message]()
 	else
 		return;
 
