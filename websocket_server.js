@@ -7,6 +7,7 @@ options.wholeWord = false
 const profanity = new Profanity(options)
 
 const inputMap = {
+	'ping':							() => pong(),
 	'keyDownForward': 	() => oscClient.send('/input/MoveForward', true),
 	'keyDownBackward': 	() => oscClient.send('/input/MoveBackward', true),
 	'keyDownLeft': 			() => oscClient.send('/input/MoveLeft', true),
@@ -82,6 +83,10 @@ function processMessage(message) {
 		case 'chatbox':
 			processChat(message.message)
 			break
+		case 'ping':
+			console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🏓: Ping}`)
+			pong()
+			break
 	}
 }
 
@@ -111,4 +116,12 @@ function keyUpAll() {
 	oscClient.send('/input/Jump', 0)
 	oscClient.send('/input/LookLeft', 0)
 	oscClient.send('/input/LookRight', 0)
+}
+
+function pong() {
+	wss.clients.forEach(function each(client) {
+		if (client.readyState === WebSocket.OPEN) {
+			client.send('pong')
+		}
+	})
 }
