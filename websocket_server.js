@@ -6,7 +6,7 @@ const options = new ProfanityOptions()
 options.wholeWord = false
 const profanity = new Profanity(options)
 
-const messageMap = {
+const commandMap = {
 	'ping':							() => pong(),
 	'keyDownForward': 	() => oscClient.send('/input/MoveForward', true),
 	'keyDownBackward': 	() => oscClient.send('/input/MoveBackward', true),
@@ -74,33 +74,32 @@ wss.on('connection', (ws, request) => {
 function processMessage(message) {
 	switch (message.type) {
 		case 'input':
-			processInput(message.message)
+			processInput(message.command)
 			break
 		case 'chatbox':
-			processChat(message.message)
+			processChat(message.chatboxMessage)
 			break
 		case 'ping':
-			console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🏓: Ping}`)
+			//console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🏓: Ping}`)
 			pong()
 			break
 	}
 }
 
-function processInput(message) {
-	if (messageMap[message])
-		messageMap[message]()
-	else
-		return;
-
-	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🕹️: ${message}}`)
+function processInput(command) {
+	if (commandMap[command]) {
+		commandMap[command]()
+		
+		console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🕹️: ${command}}`)
+	}
 }
 
-function processChat(message) {
+function processChat(chatboxMessage) {
 	// Pass "3" as the CensorType, censors all vowels
-	const censoredMessage = profanity.censor(message, 3)
+	const censoredMessage = profanity.censor(chatboxMessage, 3)
 	oscClient.send('/chatbox/input', censoredMessage, true)
 	
-	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white ⌨️: "${message}"}`)
+	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white ⌨️: "${chatboxMessage}"}`)
 }
 
 function keyUpAll() {
