@@ -7,26 +7,38 @@ options.wholeWord = false
 const profanity = new Profanity(options)
 
 const commandMap = {
-	'ping':							() => pong(),
-	'keyDownForward': 	() => oscClient.send('/input/MoveForward', true),
-	'keyDownBackward': 	() => oscClient.send('/input/MoveBackward', true),
-	'keyDownLeft': 			() => oscClient.send('/input/MoveLeft', true),
-	'keyDownRight': 		() => oscClient.send('/input/MoveRight', true),
-	'keyDownSprint': 		() => oscClient.send('/input/Run', true),
-	'keyDownJump': 			() => oscClient.send('/input/Jump', 1),
-	'keyDownVoice': 		() => oscClient.send('/input/Voice', 1),
-	'keyDownLookLeft': 	() => oscClient.send('/input/LookLeft', 1),
-	'keyDownLookRight': () => oscClient.send('/input/LookRight', 1),
-	'keyUpAll': 				() => keyUpAll(),
-	'keyUpForward': 		() => oscClient.send('/input/MoveForward', false),
-	'keyUpBackward': 		() => oscClient.send('/input/MoveBackward', false),
-	'keyUpLeft': 				() => oscClient.send('/input/MoveLeft', false),
-	'keyUpRight': 			() => oscClient.send('/input/MoveRight', false),
-	'keyUpSprint': 			() => oscClient.send('/input/Run', false),
-	'keyUpJump': 				() => oscClient.send('/input/Jump', 0),
-	'keyUpVoice': 			() => oscClient.send('/input/Voice', 0),
-	'keyUpLookLeft': 		() => oscClient.send('/input/LookLeft', 0),
-	'keyUpLookRight': 	() => oscClient.send('/input/LookRight', 0),
+	'ping':									() => pong(),
+	'keyDownForward': 			() => oscClient.send('/input/MoveForward', true),
+	'keyDownBackward': 			() => oscClient.send('/input/MoveBackward', true),
+	'keyDownLeft': 					() => oscClient.send('/input/MoveLeft', true),
+	'keyDownRight': 				() => oscClient.send('/input/MoveRight', true),
+	'keyDownSprint': 				() => oscClient.send('/input/Run', true),
+	'keyDownJump': 					() => oscClient.send('/input/Jump', 1),
+	'keyDownSpinHoldLeft': 	() => oscClient.send('/input/SpinHoldLR', -1.0000001),
+	'keyDownSpinHoldRight': () => oscClient.send('/input/SpinHoldLR', 1.0000001),
+	'keyDownSpinHoldUp': 		() => oscClient.send('/input/SpinHoldUD', -1.0000001),
+	'keyDownSpinHoldDown': 	() => oscClient.send('/input/SpinHoldUD', 1.0000001),
+	'keyDownSpinHoldCCW': 	() => oscClient.send('/input/SpinHoldCwCcw', -1.0000001),
+	'keyDownSpinHoldCW': 		() => oscClient.send('/input/SpinHoldCwCcw', 1.0000001),
+	'keyDownVoice': 				() => oscClient.send('/input/Voice', 1),
+	'keyDownLookLeft': 			() => oscClient.send('/input/LookLeft', 1),
+	'keyDownLookRight': 		() => oscClient.send('/input/LookRight', 1),
+	'keyUpAll': 						() => keyUpAll(),
+	'keyUpForward': 				() => oscClient.send('/input/MoveForward', false),
+	'keyUpBackward': 				() => oscClient.send('/input/MoveBackward', false),
+	'keyUpLeft': 						() => oscClient.send('/input/MoveLeft', false),
+	'keyUpRight': 					() => oscClient.send('/input/MoveRight', false),
+	'keyUpSprint': 					() => oscClient.send('/input/Run', false),
+	'keyUpJump': 						() => oscClient.send('/input/Jump', 0),
+	'keyUpSpinHoldLeft': 		() => oscClient.send('/input/SpinHoldLR', 0.0000001),
+	'keyUpSpinHoldRight': 	() => oscClient.send('/input/SpinHoldLR', 0.0000001),
+	'keyUpSpinHoldUp': 			() => oscClient.send('/input/SpinHoldUD', 0.0000001),
+	'keyUpSpinHoldDown': 		() => oscClient.send('/input/SpinHoldUD', 0.0000001),
+	'keyUpSpinHoldCCW': 		() => oscClient.send('/input/SpinHoldCwCcw', -0.0000001),
+	'keyUpSpinHoldCW': 			() => oscClient.send('/input/SpinHoldCwCcw', 0.0000001),
+	'keyUpVoice': 					() => oscClient.send('/input/Voice', 0),
+	'keyUpLookLeft': 				() => oscClient.send('/input/LookLeft', 0),
+	'keyUpLookRight': 			() => oscClient.send('/input/LookRight', 0),
 }
 
 // VRChat OSC
@@ -89,7 +101,7 @@ function processMessage(message) {
 function processInput(command) {
 	if (commandMap[command]) {
 		commandMap[command]()
-		
+
 		console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🕹️: ${command}}`)
 	}
 }
