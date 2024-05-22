@@ -33,7 +33,7 @@ const commandMap = {
 const { Client, Server } = require('node-osc')
 const oscClient = new Client('127.0.0.1', 9000)
 const oscServer = new Server(9001, '127.0.0.1', () => {
-	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow('OSC Server online at 9000'))
+	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow('OSC Server started at 9001'))
 })
 
 // Express for WebSockets
@@ -43,7 +43,7 @@ const SocketServer = require('ws').Server
 
 const expressPort = 2096
 const expressServer = express().listen(expressPort, () => {
-	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow(`Server started at ${expressPort}`))
+	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow(`WebSocket Server started at ${expressPort}`))
 })
 
 const wss = new SocketServer({ server: expressServer })
