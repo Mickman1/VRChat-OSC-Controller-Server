@@ -7,7 +7,7 @@ options.wholeWord = false
 const profanity = new Profanity(options)
 
 const commandMap = {
-	'ping':									() => pong(),
+	'ping': 								() => pong(),
 	'keyDownForward': 			() => oscClient.send('/input/MoveForward', true),
 	'keyDownBackward': 			() => oscClient.send('/input/MoveBackward', true),
 	'keyDownLeft': 					() => oscClient.send('/input/MoveLeft', true),
@@ -23,6 +23,7 @@ const commandMap = {
 	'keyDownVoice': 				() => oscClient.send('/input/Voice', 1),
 	'keyDownLookLeft': 			() => oscClient.send('/input/LookLeft', 1),
 	'keyDownLookRight': 		() => oscClient.send('/input/LookRight', 1),
+	'joystickHorizontal': 	(value) => joystickHorizontal(value),
 	'keyUpAll': 						() => keyUpAll(),
 	'keyUpForward': 				() => oscClient.send('/input/MoveForward', false),
 	'keyUpBackward': 				() => oscClient.send('/input/MoveBackward', false),
@@ -43,6 +44,7 @@ const commandMap = {
 
 // VRChat OSC
 const { Client, Server } = require('node-osc')
+const osc = require('node-osc')
 const oscClient = new Client('127.0.0.1', 9000)
 const oscServer = new Server(9001, '127.0.0.1', () => {
 	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow('OSC Server started at 9001'))
@@ -86,7 +88,7 @@ wss.on('connection', (ws, request) => {
 function processMessage(message) {
 	switch (message.type) {
 		case 'input':
-			processInput(message.command)
+			processInput(message.command, message.value)
 			break
 		case 'chatbox':
 			processChat(message.chatboxMessage)
@@ -98,9 +100,9 @@ function processMessage(message) {
 	}
 }
 
-function processInput(command) {
+function processInput(command, value) {
 	if (commandMap[command]) {
-		commandMap[command]()
+		commandMap[command](value)
 
 		console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white 🕹️: ${command}}`)
 	}
@@ -123,6 +125,15 @@ function keyUpAll() {
 	oscClient.send('/input/Jump', 0)
 	oscClient.send('/input/LookLeft', 0)
 	oscClient.send('/input/LookRight', 0)
+}
+
+function joystickHorizontal(value) {
+	let msg = new osc.Message('/input/LookHorizontal')
+	msg.append({
+		type: 'f',
+		value: value
+	})
+	oscClient.send(msg)
 }
 
 function pong() {
