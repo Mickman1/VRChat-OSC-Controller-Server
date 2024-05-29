@@ -130,6 +130,7 @@ function keyUpAll() {
 }
 
 function joystickHorizontal(value) {
+	// JavaScript floats don't play nice with node-osc, have to specify type
 	let msg = new osc.Message('/input/LookHorizontal')
 	msg.append({
 		type: 'f',
@@ -138,6 +139,7 @@ function joystickHorizontal(value) {
 	oscClient.send(msg)
 }
 
+//TODO: Only pong the client that pinged
 function pong() {
 	wss.clients.forEach(function each(client) {
 		if (client.readyState === WebSocket.OPEN) {
