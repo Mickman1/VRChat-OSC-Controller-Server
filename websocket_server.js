@@ -57,6 +57,8 @@ const express = require('express')
 const WebSocket = require('ws')
 const SocketServer = require('ws').Server
 
+let hornsTimeout
+
 const expressPort = 2096
 const expressServer = express().listen(expressPort, () => {
 	console.log(chalk.cyan(`[${new Date().toLocaleTimeString()}]`), chalk.yellow(`WebSocket Server started at ${expressPort}`))
@@ -74,6 +76,14 @@ wss.on('connection', (ws, request) => {
 	})
 
 	ws.on('message', (message) => {
+		if (message.type !== 'ping') {
+			oscClient.send('/avatar/parameters/Horns', true)
+			clearTimeout(hornsTimeout)
+			
+			hornsTimeout = setTimeout(() => {
+				oscClient.send('/avatar/parameters/Horns', false)
+			}, 1000)
+		}
 		const messageObject = JSON.parse(message)
 
 		processMessage(messageObject)
