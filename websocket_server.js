@@ -58,6 +58,7 @@ const WebSocket = require('ws')
 const SocketServer = require('ws').Server
 
 let hornsTimeout
+let isReceivingInput = false
 
 const expressPort = 2096
 const expressServer = express().listen(expressPort, () => {
@@ -76,15 +77,21 @@ wss.on('connection', (ws, request) => {
 	})
 
 	ws.on('message', (message) => {
-		if (message.type !== 'ping') {
-			oscClient.send('/avatar/parameters/Horns', true)
-			clearTimeout(hornsTimeout)
-			
-			hornsTimeout = setTimeout(() => {
-				oscClient.send('/avatar/parameters/Horns', false)
-			}, 1000)
-		}
 		const messageObject = JSON.parse(message)
+
+		if (messageObject.type === 'input') {
+			isReceivingInput = true
+
+			oscClient.send('/avatar/parameters/Horns', true)
+
+			clearTimeout(hornsTimeout)
+			hornsTimeout = setTimeout(() => {
+				isReceivingInput = false
+				oscClient.send('/avatar/parameters/Horns', false)
+			}, 2000)
+		}
+		else if (!isReceivingInput)
+			oscClient.send('/avatar/parameters/Horns', false)
 
 		processMessage(messageObject)
 
