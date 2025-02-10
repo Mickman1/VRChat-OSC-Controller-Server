@@ -131,7 +131,7 @@ function processChat(chatboxMessage) {
 	// Pass "3" as the CensorType, censors all vowels
 	const censoredMessage = profanity.censor(chatboxMessage, 3)
 	oscClient.send('/chatbox/input', censoredMessage, true)
-	
+
 	console.log(chalk`{cyan [${new Date().toLocaleTimeString()}]} {white ⌨️: "${chatboxMessage}"}`)
 }
 
